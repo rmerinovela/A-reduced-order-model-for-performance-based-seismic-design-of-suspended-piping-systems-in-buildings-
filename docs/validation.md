@@ -10,7 +10,7 @@ by the scripts in `validation/`; the tables below summarise them.
 | [SDOF parameters](#2-equivalent-sdof-parameters) | `equivalent_static.py` → `NLTHA_SDOF.py` | the scripts' example system | **identical** (relative difference 0) |
 | [SDOF parameters](#hand-typed-sdof-constants) | constants typed into `Pushover_SDOF/*.py` | 18 SDOFs | only partly consistent with the 2D results (paper-side issue) |
 | [SDOF time history](#3-sdof-time-history) | `Results/<M>_peak_displacements.npy` | 18 SDOFs × 4 records × IM1–IM10 | **14 SDOFs match** (median 0, max 0.5%); M61x/y, M62x/y don't (paper-side issue) |
-| [3D verification](#4-3d-verification) | `Results/<M>_biron_DispX/Y.txt` | 9 models × 1 ground motion × 2 orientations at IM10 | see [§4](#4-3d-verification) |
+| [3D verification](#4-3d-verification) | `Results/<M>_biron_DispX/Y.txt` | 9 models × 1 ground motion × 2 orientations at IM10 | **all 18 runs match** (max difference 0.005 mm) |
 
 ## How to reproduce
 
@@ -147,11 +147,23 @@ step from rest. The engine uses `EnergyIncr`, as M29–M63 do ([legacy_issues.md
 | M02 | 120112 / 120111 | 458.072 / 458.07 | 14.603 / 14.60 |
 | M03 | 120111 / 120112 | 526.719 / 526.72 | 260.188 / 260.19 |
 | M03 | 120112 / 120111 | 259.647 / 259.65 | 490.881 / 490.88 |
-| M29 | 120111 / 120112 | 11.159 / 11.16 | 11.574 / 11.57 |
-| M29–M63 (other runs) | | pending | pending |
+| M29 | 120111 / 120112 | 11.159 / 11.16 | 11.573 / 11.57 |
+| M29 | 120112 / 120111 | 12.901 / 12.90 | 10.899 / 10.90 |
+| M30 | 120111 / 120112 | 11.013 / 11.01 | 11.021 / 11.02 |
+| M30 | 120112 / 120111 | 14.497 / 14.50 | 10.856 / 10.86 |
+| M31 | 120111 / 120112 | 11.501 / 11.50 | 12.199 / 12.20 |
+| M31 | 120112 / 120111 | 16.224 / 16.22 | 11.269 / 11.27 |
+| M61 | 120111 / 120112 | 17.413 / 17.41 | 20.092 / 20.09 |
+| M61 | 120112 / 120111 | 22.098 / 22.10 | 16.212 / 16.21 |
+| M62 | 120111 / 120112 | 20.055 / 20.06 | 45.921 / 45.92 |
+| M62 | 120112 / 120111 | 219.647 / 219.65 | 19.315 / 19.31 |
+| M63 | 120111 / 120112 | 44.798 / 44.80 | 381.651 / 381.65 |
+| M63 | 120112 / 120111 | 538.977 / 538.98 | 26.878 / 26.88 |
 
-The engine reproduces the paper's 3D results to the precision stored (2 decimals). That includes runs
-where trapezes reach their failure cap and displacements exceed 250 mm (M02, M03). It also shows that
+**All 18 runs (9 models × 2 orientations) reproduce the paper's 3D results to the precision stored**
+(2 decimals; largest difference 0.005 mm). That includes runs where trapezes reach their failure cap and
+displacements exceed 200 mm (M02, M03, M62, M63). A run takes about 3 min (M01–M03) to 45 min (M61–M63)
+with 9 runs sharing the machine. It also shows that
 the paper's M01–M03 results were produced with `EnergyIncr`, not with the committed `RelativeEnergyIncr`.
 
 `tests/test_timehistory.py` checks M01 on every test run.
