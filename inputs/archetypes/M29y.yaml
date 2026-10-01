@@ -1,0 +1,24 @@
+# Units: N, mm, s
+name: M29y
+description: Archetype M29, loading along y (from code implementation for paper/Pushover2D/CS_Lumped_Iter_M29y_cont_PO.py)
+main_line: {length: 32000, n_pipes: 3}
+pipe: {outer_diameter: 127, inner_diameter: 113, elastic_modulus: 210000, shear_modulus: 81000, density: 7.85e-09}
+hangers: {first: 2000, spacing: 3000}
+braces:
+  mask: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1]
+branches:
+- {x: 1050, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 4250, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 7050, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 11550, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 14250, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 18350, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 20950, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 25550, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 30450, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 2350, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 7050, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 11550, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 19150, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 22950, length: 5500, n_pipes: 3, n_braces: 1}
+- {x: 30950, length: 5500, n_pipes: 3, n_braces: 1}

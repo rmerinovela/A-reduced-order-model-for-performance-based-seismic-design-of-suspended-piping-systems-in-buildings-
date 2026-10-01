@@ -1,0 +1,9 @@
+# The system analysed by code implementation for paper/code_proposed_procedure/equivalent_static.py. Units: N, mm, s
+name: equivalent_static_example
+description: Main line with 4 evenly spaced transverse braces and one branch at the end
+main_line: {length: 36000, n_pipes: 3}
+hangers: {first: 1000, spacing: 3000}
+braces:
+  count: 4            # evenly spaced, snapped to the nearest hanger
+branches:
+- {x: 36000, length: 18000, n_pipes: 3, n_braces: 3}

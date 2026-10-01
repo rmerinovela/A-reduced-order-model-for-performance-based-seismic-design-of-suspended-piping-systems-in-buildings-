@@ -1,0 +1,34 @@
+# Floor-motion sets available to the engine. Paths are relative to this folder.
+#
+# Each set is a family of floor acceleration files:
+#   file_pattern  file name; {record} is replaced by the record ID and {level} by the intensity level
+#   records       list of IDs, or {file: ...} (IDs read from a text file), or {range: [first, last]}
+#   record_pairs  true if consecutive records are the two horizontal components of one ground motion
+#   levels        intensity levels available ({level} values), or null if the pattern has none
+#   time_column   column with the time; the time step is taken as the first time value
+#   floors        floor number -> column with that floor's acceleration
+#   to_mm_s2      factor converting the file's acceleration units to mm/s^2
+
+S4_IM:
+  description: >
+    Floor accelerations of the 4-storey building at 12 intensity levels, for the 22 bidirectional
+    ground motions in ground_motions/ (used by the 3D models of the paper)
+  file_pattern: floor_motions/ResultsS4/FloorAcc_IM{level}_{record}.txt
+  records: {file: ground_motions/Names.txt}
+  record_pairs: true
+  levels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  time_column: 0
+  floors: {1: 1, 2: 2, 3: 3, 4: 4}
+  to_mm_s2: 1000.0
+
+S4_150:
+  description: >
+    150 floor acceleration histories of the 4-storey building (used by
+    code_proposed_procedure/NLTHA_SDOF.py of the paper)
+  file_pattern: floor_motions/ResultsS4/FloorAcc_{record}.txt
+  records: {range: [1, 150]}
+  record_pairs: false
+  levels: null
+  time_column: 0
+  floors: {1: 1, 2: 2, 3: 3, 4: 4}
+  to_mm_s2: 1000.0

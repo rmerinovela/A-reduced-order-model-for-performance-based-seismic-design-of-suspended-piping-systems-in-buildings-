@@ -1,0 +1,15 @@
+# Tested with Python 3.12 on macOS (arm64)
+openseespy==3.7.1.2
+numpy==2.5.3
+scipy==1.18.1
+matplotlib==3.11.2
+vfo==0.0.19
+pyyaml==6.0.3
+
+# App
+streamlit==1.64.0
+plotly==7.1.0
+
+# Notebooks in Results/ and tests
+ipykernel==7.4.0
+pytest==9.1.1

@@ -1,0 +1,10 @@
+# Units: N, mm, s
+name: M30x
+description: Archetype M30, loading along x (from code implementation for paper/Pushover2D/CS_Lumped_Iter_M30x_cont_PO.py)
+main_line: {length: 12000, n_pipes: 18}
+pipe: {outer_diameter: 127, inner_diameter: 113, elastic_modulus: 210000, shear_modulus: 81000, density: 7.85e-09}
+hangers: {first: 1500, spacing: 3000}
+braces:
+  mask: [0, 1, 1, 0]
+branches:
+- {x: 6000, length: 32000, n_pipes: 3, n_braces: 3}

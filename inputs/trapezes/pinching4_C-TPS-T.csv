@@ -1,0 +1,40 @@
+parameter,value,description
+TePf1,600,positive envelope force point 1
+TePf2,6000,positive envelope force point 2
+TePf3,9000,positive envelope force point 3
+TePf4,9100,positive envelope force point 4
+TePd1,0.1,positive envelope deformation point 1
+TePd2,10,positive envelope deformation point 2
+TePd3,17,positive envelope deformation point 3
+TePd4,36,positive envelope deformation point 4
+TeNf1,-600,negative envelope force point 1
+TeNf2,-6000,negative envelope force point 2
+TeNf3,-9000,negative envelope force point 3
+TeNf4,-9100,negative envelope force point 4
+TeNd1,-0.1,negative envelope deformation point 1
+TeNd2,-10,negative envelope deformation point 2
+TeNd3,-17,negative envelope deformation point 3
+TeNd4,-36,negative envelope deformation point 4
+TrDispP,0.1,reloading deformation ratio (positive)
+TrForceP,0.4,reloading force ratio (positive)
+TuForceP,-0.3,unloading strength ratio (positive)
+TrDispN,0.1,reloading deformation ratio (negative)
+TrForceN,0.4,reloading force ratio (negative)
+TuForceN,-0.3,unloading strength ratio (negative)
+TgK1,0,unloading stiffness degradation parameter 1
+TgK2,0,unloading stiffness degradation parameter 2
+TgK3,0,unloading stiffness degradation parameter 3
+TgK4,0,unloading stiffness degradation parameter 4
+TgKLim,0,limit for unloading stiffness degradation
+TgD1,0,reloading stiffness degradation parameter 1
+TgD2,0,reloading stiffness degradation parameter 2
+TgD3,0,reloading stiffness degradation parameter 3
+TgD4,0,reloading stiffness degradation parameter 4
+TgDLim,0,limit for reloading stiffness degradation
+TgF1,0,strength degradation parameter 1
+TgF2,0,strength degradation parameter 2
+TgF3,0,strength degradation parameter 3
+TgF4,0,strength degradation parameter 4
+TgFLim,0,limit for strength degradation
+TgE,10,max cyclic energy factor
+TdmgType,cycle,damage model type

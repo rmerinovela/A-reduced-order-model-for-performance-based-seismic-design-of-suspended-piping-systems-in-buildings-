@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+/piperom_output/
+/motions/floor_motions/ResultsS4/
+.DS_Store
+/validation/.timehistory_*.md

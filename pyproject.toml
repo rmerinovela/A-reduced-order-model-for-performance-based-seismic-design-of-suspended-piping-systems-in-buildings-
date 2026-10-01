@@ -1,0 +1,9 @@
+[project]
+name = "piperom"
+version = "0.1.0"
+description = "Reduced-order model for performance-based seismic design of suspended piping systems"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
