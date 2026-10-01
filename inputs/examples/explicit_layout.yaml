@@ -1,0 +1,14 @@
+# Example of an irregular layout: explicit hanger and brace positions, branches from a CSV file,
+# a custom transverse trapeze and a few non-default pipe properties. Units: N, mm, s
+name: explicit_layout
+description: Irregular hanger spacing, braces by position, two branches read from a CSV file
+main_line: {length: 30000, n_pipes: 2}
+pipe: {outer_diameter: 114.3, inner_diameter: 102.3}
+hangers:
+  positions: [800, 3500, 6000, 9000, 11500, 14500, 17000, 20000, 23000, 26000, 28800]
+braces:
+  positions: [3500, 14500, 26000]
+branches: explicit_layout_branches.csv
+trapezes:
+  transverse: custom_transverse_trapeze.csv
+  longitudinal: default

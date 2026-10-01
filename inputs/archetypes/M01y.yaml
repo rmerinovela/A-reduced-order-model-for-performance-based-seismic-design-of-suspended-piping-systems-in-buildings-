@@ -1,0 +1,10 @@
+# Units: N, mm, s
+name: M01y
+description: Archetype M01, loading along y (from code implementation for paper/Pushover2D/CS_Lumped_Iter_M01y_cont_PO.py)
+main_line: {length: 36000, n_pipes: 3}
+pipe: {outer_diameter: 127, inner_diameter: 113, elastic_modulus: 210000, shear_modulus: 81000, density: 7.85e-09}
+hangers: {first: 1000, spacing: 3000}
+braces:
+  mask: [1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0]
+branches:
+- {x: 36000, length: 18000, n_pipes: 3, n_braces: 3}

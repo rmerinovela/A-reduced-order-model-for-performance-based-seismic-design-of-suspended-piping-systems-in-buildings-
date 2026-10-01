@@ -1,0 +1,40 @@
+parameter,value,description
+LePf1,600,positive envelope force point 1
+LePf2,7500,positive envelope force point 2
+LePf3,11500,"positive envelope force point 3 (LEGACY: value used by the static procedure in Pushover2D/Functions.py)"
+LePf4,11500,positive envelope force point 4
+LePd1,0.1,positive envelope deformation point 1
+LePd2,12,positive envelope deformation point 2
+LePd3,24,positive envelope deformation point 3
+LePd4,61,positive envelope deformation point 4
+LeNf1,-600,negative envelope force point 1
+LeNf2,-7500,negative envelope force point 2
+LeNf3,-10000,negative envelope force point 3
+LeNf4,-11500,negative envelope force point 4
+LeNd1,-0.1,negative envelope deformation point 1
+LeNd2,-12,negative envelope deformation point 2
+LeNd3,-24,negative envelope deformation point 3
+LeNd4,-61,negative envelope deformation point 4
+LrDispP,0.1,reloading deformation ratio (positive)
+LrForceP,0.45,reloading force ratio (positive)
+LuForceP,-0.4,unloading strength ratio (positive)
+LrDispN,0.1,reloading deformation ratio (negative)
+LrForceN,0.45,reloading force ratio (negative)
+LuForceN,-0.4,unloading strength ratio (negative)
+LgK1,0,unloading stiffness degradation parameter 1
+LgK2,0,unloading stiffness degradation parameter 2
+LgK3,0,unloading stiffness degradation parameter 3
+LgK4,0,unloading stiffness degradation parameter 4
+LgKLim,0,limit for unloading stiffness degradation
+LgD1,0,reloading stiffness degradation parameter 1
+LgD2,0,reloading stiffness degradation parameter 2
+LgD3,0,reloading stiffness degradation parameter 3
+LgD4,0,reloading stiffness degradation parameter 4
+LgDLim,0,limit for reloading stiffness degradation
+LgF1,0,strength degradation parameter 1
+LgF2,0,strength degradation parameter 2
+LgF3,0,strength degradation parameter 3
+LgF4,0,strength degradation parameter 4
+LgFLim,0,limit for strength degradation
+LgE,10,max cyclic energy factor
+LdmgType,cycle,damage model type

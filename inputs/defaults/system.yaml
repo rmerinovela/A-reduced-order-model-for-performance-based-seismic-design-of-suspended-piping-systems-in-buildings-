@@ -1,0 +1,20 @@
+# Defaults for optional entries of a piping-system file. Units: N, mm, s (mass in tonnes).
+# A system file only needs to specify what differs from these values.
+
+pipe:
+  outer_diameter: 127.0     # external diameter of one pipe
+  inner_diameter: 113.0     # internal diameter of one pipe
+  elastic_modulus: 210000.0
+  shear_modulus: 81000.0
+  density: 7.85e-9          # pipe material density
+  fluid_density: null       # density of the contained fluid; null -> density / 7.8 (water in steel pipes)
+  mass_factor: 1.35         # multiplier on (pipe + fluid) mass per unit length
+
+hangers:
+  end_clearance: 1000.0     # grid mode only: last hanger at least this far from the main-line end
+
+branch_participation: 1.0   # factor on branch lumped mass and stiffness (alpha in the original code)
+
+trapezes:
+  transverse: default       # "default" or path to a Pinching4 CSV file (same format as inputs/trapezes/)
+  longitudinal: default

@@ -1,0 +1,10 @@
+# Units: N, mm, s
+name: M63x
+description: Archetype M63, loading along x (from code implementation for paper/Pushover2D/CS_Lumped_Iter_M63x_cont_PO.py)
+main_line: {length: 52000, n_pipes: 6}
+pipe: {outer_diameter: 127, inner_diameter: 113, elastic_modulus: 210000, shear_modulus: 81000, density: 7.85e-09}
+hangers: {first: 1000, spacing: 3000}
+braces:
+  mask: [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+branches:
+- {x: 52000, length: 82000, n_pipes: 3, n_braces: 3}

@@ -1,0 +1,57 @@
+# Default analysis settings. A settings file only needs to specify what differs from these values.
+
+pushover:
+  # Target displacements Delta_c (mm) of the adaptive pseudo-pushover: either an explicit list
+  # in `delta_c_values`, or `n_steps` values evenly spaced between `delta_c_start` and `delta_c_stop`.
+  delta_c_start: 0.1
+  delta_c_stop: 50.0
+  n_steps: 50
+  delta_c_values: null
+  warm_start: false         # true: start each step from the previous converged shape (original: false)
+
+shape_iteration:            # fixed-point iteration on the displaced shape at each Delta_c
+  max_iterations: 50
+  tolerance: 1.0e-3         # RMS change of the normalised shape
+
+static_solver:              # OpenSees settings of each linear static solve
+  test: NormDispIncr
+  tolerance: 1.0e-8
+  max_iterations: 50
+
+sdof:
+  delta_c: 12.0             # target displacement (mm) at which the equivalent SDOF is defined
+
+motions:                    # default floor-motion selection (sets are described in motions/motion_sets.yaml)
+  set: S4_IM
+  levels: [12]              # intensity levels (ignored for sets without levels)
+  records: null             # null = every record of the set; or a list of record IDs
+  floor: 4
+
+sdof_time_history:          # nonlinear time-history analysis of the equivalent SDOF (as in NLTHA_SDOF.py)
+  damping_ratio: 0.02
+  rayleigh:                 # factors on the Rayleigh terms, computed from the first SDOF mode
+    mass: 0.0
+    current_stiffness: 1.0
+    committed_stiffness: 0.0
+    initial_stiffness: 0.0
+  test: EnergyIncr
+  tolerance: 1.0e-8
+  max_iterations: 50
+  fallback_tolerance: 1.0e-6
+  fallback_max_iterations: 100000
+
+verification_3d:            # full 3D models of inputs/models3d/ (procedure of the paper's 3D_models scripts)
+  gravity_steps: 10
+  damping_ratio: 0.02
+  rayleigh_modes: [1, 2]
+  rayleigh:                 # factors on the Rayleigh terms
+    mass: 1.0
+    current_stiffness: 0.0
+    committed_stiffness: 1.0
+    initial_stiffness: 0.0
+  test: EnergyIncr          # as M29-M63; M01-M03 use RelativeEnergyIncr, which fails to converge from rest
+  tolerance: 1.0e-4
+  max_iterations: 500
+  fallback_test: EnergyIncr
+  fallback_tolerance: 1.0e-3
+  fallback_max_iterations: 3000
