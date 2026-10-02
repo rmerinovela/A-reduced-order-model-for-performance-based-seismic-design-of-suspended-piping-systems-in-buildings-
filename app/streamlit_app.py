@@ -93,6 +93,7 @@ def load_settings_into_state(s: AnalysisSettings) -> None:
     ss.s_maxit, ss.s_tol = s.max_iterations, s.tolerance
     ss.s_test, ss.s_stol, ss.s_smaxit = s.solver_test, s.solver_tolerance, s.solver_max_iterations
     ss.s_sdof_dc = s.sdof_delta_c
+    ss.s_split = s.branch_split
     ss.s_raw = {k: s.to_dict()[k] for k in ("motions", "sdof_time_history", "verification_3d")}
     th, v3, mo = s.sdof_time_history, s.verification_3d, s.motions
     ss.th_xi, ss.th_test, ss.th_tol, ss.th_maxit = th["damping_ratio"], th["test"], th["tolerance"], th["max_iterations"]
@@ -109,7 +110,7 @@ if "v" not in st.session_state:
 # hanger positions are selected); re-assigning keeps every input across mode switches.
 PERSISTENT = ["name", "description", "length", "n_pipes", "branch_participation", "h_mode", "h_positions",
               "h_first", "h_spacing", "h_clearance", "b_mode", "b_count", "s_explicit", "s_values", "s_start",
-              "s_stop", "s_n", "s_warm", "s_maxit", "s_tol", "s_test", "s_stol", "s_smaxit", "s_sdof_dc",
+              "s_stop", "s_n", "s_warm", "s_maxit", "s_tol", "s_test", "s_stol", "s_smaxit", "s_sdof_dc", "s_split",
               "th_xi", "th_test", "th_tol", "th_maxit", "v3_xi", "v3_test", "v3_tol", "v3_maxit", "v3_fb_test",
               "v3_fb_tol", "m_set", "m_levels", "m_floor",
               *(f"pipe_{k}" for k in ("outer_diameter", "inner_diameter", "elastic_modulus", "shear_modulus",
@@ -385,6 +386,7 @@ def settings_from_state() -> tuple[AnalysisSettings | None, str | None]:
                              "delta_c_values": values, "warm_start": ss.s_warm},
                 "shape_iteration": {"max_iterations": ss.s_maxit, "tolerance": ss.s_tol},
                 "static_solver": {"test": ss.s_test, "tolerance": ss.s_stol, "max_iterations": ss.s_smaxit},
+                "equivalent_static": {"branch_split": ss.s_split},
                 "sdof": {"delta_c": ss.s_sdof_dc},
                 "motions": {**ss.s_raw["motions"], "set": ss.m_set, "levels": list(ss.m_levels) or None,
                             "floor": int(ss.m_floor)},
@@ -418,6 +420,10 @@ with tab_set:
         st.selectbox("Convergence test", ["NormDispIncr", "EnergyIncr", "NormUnbalance"], key="s_test")
         st.number_input("Solver tolerance", min_value=1e-16, format="%.1e", key="s_stol")
         st.number_input("Solver max iterations", min_value=1, step=1, key="s_smaxit")
+        st.selectbox("Branch force split", ["consistent", "legacy"], key="s_split",
+                     help="consistent: the branch force is fully applied (junction node mass in the main-line "
+                          "share). legacy: as the paper's code, which reproduces its pushover results "
+                          "(docs/legacy_issues.md, A2).")
     with c3:
         st.subheader("Equivalent SDOF")
         st.number_input("Delta_c defining the SDOF (mm)", min_value=1e-6, format="%.3f", key="s_sdof_dc")

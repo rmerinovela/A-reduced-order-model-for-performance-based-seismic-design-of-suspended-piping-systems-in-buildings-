@@ -29,6 +29,8 @@ Don't "simplify" the arithmetic without re-running `tests/test_regression.py`.
 | `gamma`, `effective_mass`, `total_mass`, `mass_ratio` | modal quantities |
 | `base_shear`, `f_push` | base shear and load pattern |
 
+`SolverSettings(test, tolerance, max_iterations, branch_split)`: settings of each static step.
+
 **`iterate_shape(rs, d_init, delta, max_iterations, tolerance, solver) -> ShapeResult`**: repeats the solve,
 normalising the displacements to max |u| = 1, until the RMS change is below `tolerance`.
 
@@ -59,7 +61,8 @@ Other members:
    `n_braces` × longitudinal secant.
 6. Load pattern:
    - branch force split into stay and pass parts, in one loop (`_neighbours` finds the tributary
-     window);
+     window). `solver.branch_split` chooses the rule: `consistent` (shares by mass, junction node in the
+     main-line share, parts summing to the branch force) or `legacy` (the paper's code);
    - pass part divided left/right;
    - segment-wise redistribution ∝ m·d between branch junctions.
 7. Static solve; Γ, M_eff, mass ratio and base shear with the shape normalised to the last DOF (the
@@ -78,10 +81,13 @@ omitted: results are unchanged (regression tests) and the pushover runs about 3�
 
 ## Known behaviours kept from the paper's code
 
-- The stay and pass parts of a branch force don't sum to the branch force ([legacy_issues.md](../legacy_issues.md),
-  A2).
+- With `branch_split: legacy` only: the stay and pass parts of a branch force don't sum to the branch force
+  ([legacy_issues.md](../legacy_issues.md), A2). The default `consistent` split fixes this.
 - Branch DOF displacements are read at the main-line junction node, not at the lumped branch node.
 
 ## Tests
 
-`tests/test_regression.py` reproduces all 18 `pushover_results_*.txt` files through `pushover`.
+- `tests/test_regression.py` reproduces all 18 `pushover_results_*.txt` files through `pushover` (with
+  `branch_split: legacy`).
+- `tests/test_static_model.py` checks equilibrium: with the consistent split, the base shear equals the
+  sum of the spring forces for every archetype.

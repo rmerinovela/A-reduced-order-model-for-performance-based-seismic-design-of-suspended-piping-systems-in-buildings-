@@ -18,7 +18,7 @@ input validation rules live. File format reference: [input_files.md](../input_fi
 | `Branch` | `x`, `length`, `n_pipes`, `n_braces` |
 | `PipingSystem` | the system **as specified**: hangers as a grid *or* positions, braces as mask *or* positions *or* count, trapezes as `"default"`, a path or a `Pinching4` |
 | `ResolvedSystem` | the system **as analysed**: numpy arrays of hanger x, brace mask, branch data, plus loaded `Pinching4` and derived `Trilinear` for each trapeze type |
-| `AnalysisSettings` | pushover, shape-iteration, static-solver and SDOF settings as typed fields; the `motions`, `sdof_time_history` and `verification_3d` sections as dictionaries, parsed by their modules |
+| `AnalysisSettings` | pushover, shape-iteration, static-solver, branch-split and SDOF settings as typed fields; the `motions`, `sdof_time_history` and `verification_3d` sections as dictionaries, parsed by their modules |
 
 ## Lifecycle
 

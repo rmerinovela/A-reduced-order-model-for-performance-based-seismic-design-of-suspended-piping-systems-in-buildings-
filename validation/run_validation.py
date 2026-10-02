@@ -14,12 +14,12 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from piperom.inputs import load_settings, load_system  # noqa: E402
+from piperom.inputs import load_system  # noqa: E402
 from piperom.pushover import run_pushover  # noqa: E402
 from piperom.sdof import derive_sdof  # noqa: E402
 from validation.legacy import (ARCHETYPES, EQUIV_STATIC_EXAMPLE, LEGACY_L, archetype,  # noqa: E402
-                               compare_pushover, extract_support_displacements, match_hand_typed,
-                               run_legacy_equivalent_static)
+                               compare_pushover, extract_support_displacements, legacy_settings,
+                               match_hand_typed, run_legacy_equivalent_static)
 
 OUT = Path(__file__).resolve().parent / "report.md"
 
@@ -49,7 +49,7 @@ def main() -> None:
         ref = run_legacy_equivalent_static(Path(tmp))
     system = load_system(EQUIV_STATIC_EXAMPLE)
     system.trapezes["longitudinal"] = str(LEGACY_L)
-    p = derive_sdof(system, load_settings(), float(ref["dc"]))
+    p = derive_sdof(system, legacy_settings(), float(ref["dc"]))
     shape_ref = extract_support_displacements(ref["d_norm"], ref["stiff_mask"], int(ref["nOrth"]))
     rel = lambda a, b: abs(a - b) / abs(b)  # noqa: E731
     lines += ["", "## 2. SDOF parameters vs `equivalent_static.py` + `NLTHA_SDOF.py`", "",
@@ -89,23 +89,31 @@ def main() -> None:
         lines.append(f"| {tag} | {m['delta_c']:.2f} | {m['gamma']:.3f} / {h['gamma']} | {dphi} | "
                      f"{m['effective_mass']:.2f} / {h['mass']} | {m['nT']} / {h['nT']} | {m['nL']} / {h['nL']} | {note} |")
 
-    # ------------------------------------------------------------------ 4. trapeze files
-    lines += ["", "## 4. Effect of using the trapeze files as the single source", "",
-              "The new code derives the static trilinear backbone from the Pinching4 files: the longitudinal "
-              "point 3 becomes 10000 N at 24 mm (file) instead of 11500 N (original static code). "
-              "Differences of the default run with respect to the legacy run:", "",
-              "| Archetype | Max rel. change in base shear | Base shear at 50 mm, legacy / default (kN) "
-              "| Gamma at 50 mm, legacy / default |", "|---|---|---|---|"]
-    settings = load_settings()
+    # ------------------------------------------------------------------ 4. corrections
+    lines += ["", "## 4. Effect of the corrections to the paper's code", "",
+              "Sections 1-2 reproduce the paper's code. The engine's defaults differ in two corrections "
+              "(docs/legacy_issues.md):", "",
+              "- **trapeze file** (A1): longitudinal point 3 = 10000 N at 24 mm, as in the Pinching4 file, "
+              "instead of 11500 N;",
+              "- **consistent split** (A2): the junction node mass is part of the main-line share, so the branch "
+              "force is fully applied.", "",
+              "Each run is compared with the paper-equivalent run (section 1). 'Max change' is the largest "
+              "relative change of the base shear over the 50 Δc steps.", "",
+              "| Archetype | V_b at 50 mm (kN): paper / trapeze file / consistent split / both (defaults) "
+              "| Max change: trapeze / split / both | Γ at 50 mm: paper / both |", "|---|---|---|---|"]
+    variants = {"trapeze": (False, "legacy"), "split": (True, "consistent"), "both": (False, "consistent")}
     for tag in ARCHETYPES:
-        new = run_pushover(archetype(tag, legacy_trapezes=False), settings)
         old = results[tag]
         vb_old = np.array([s.base_shear for s in old.steps])
-        vb_new = np.array([s.base_shear for s in new.steps])
-        lines.append(f"| {tag} | {np.max(np.abs(vb_new - vb_old) / np.abs(vb_old)):.1%} | "
-                     f"{vb_old[-1] / 1e3:.1f} / {vb_new[-1] / 1e3:.1f} | "
-                     f"{old.steps[-1].gamma:.3f} / {new.steps[-1].gamma:.3f} |")
-        print(f"default trapezes {tag} done")
+        runs = {k: run_pushover(archetype(tag, legacy_trapezes=lt), legacy_settings(split))
+                for k, (lt, split) in variants.items()}
+        vb = {k: np.array([s.base_shear for s in r.steps]) for k, r in runs.items()}
+        change = {k: np.max(np.abs(v - vb_old) / np.abs(vb_old)) for k, v in vb.items()}
+        lines.append(f"| {tag} | {vb_old[-1] / 1e3:.1f} / {vb['trapeze'][-1] / 1e3:.1f} / "
+                     f"{vb['split'][-1] / 1e3:.1f} / {vb['both'][-1] / 1e3:.1f} | "
+                     f"{change['trapeze']:.1%} / {change['split']:.1%} / {change['both']:.1%} | "
+                     f"{old.steps[-1].gamma:.3f} / {runs['both'].steps[-1].gamma:.3f} |")
+        print(f"corrections {tag} done")
 
     OUT.write_text("\n".join(lines) + "\n")
     print(f"wrote {OUT}")

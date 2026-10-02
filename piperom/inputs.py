@@ -407,6 +407,7 @@ class AnalysisSettings:
     solver_tolerance: float
     solver_max_iterations: int
     sdof_delta_c: float
+    branch_split: str
     motions: dict = field(default_factory=dict)              # default floor-motion selection
     sdof_time_history: dict = field(default_factory=dict)    # parsed by timehistory.TimeHistorySettings
     verification_3d: dict = field(default_factory=dict)      # parsed by verification3d.Verification3DSettings
@@ -414,13 +415,17 @@ class AnalysisSettings:
     @classmethod
     def from_dict(cls, data: dict | None = None) -> "AnalysisSettings":
         d = deep_merge(read_yaml(DEFAULTS_DIR / "settings.yaml"), data or {})
-        check_keys("settings", d, {"pushover", "shape_iteration", "static_solver", "sdof", "motions",
-                                    "sdof_time_history", "verification_3d"})
+        check_keys("settings", d, {"pushover", "shape_iteration", "static_solver", "equivalent_static", "sdof",
+                                   "motions", "sdof_time_history", "verification_3d"})
         po, it, so, sd = d["pushover"], d["shape_iteration"], d["static_solver"], d["sdof"]
         check_keys("pushover", po, {"delta_c_start", "delta_c_stop", "n_steps", "delta_c_values", "warm_start"})
         check_keys("shape_iteration", it, {"max_iterations", "tolerance"})
         check_keys("static_solver", so, {"test", "tolerance", "max_iterations"})
         check_keys("sdof", sd, {"delta_c"})
+        eq = d["equivalent_static"]
+        check_keys("equivalent_static", eq, {"branch_split"})
+        if eq["branch_split"] not in ("consistent", "legacy"):
+            raise InputError("'equivalent_static.branch_split' must be 'consistent' or 'legacy'")
         values = po.get("delta_c_values")
         if values is not None:
             values = [parse_number("pushover", "delta_c_values", v) for v in values]
@@ -438,6 +443,7 @@ class AnalysisSettings:
             solver_tolerance=parse_number("static_solver", "tolerance", so["tolerance"]),
             solver_max_iterations=parse_number("static_solver", "max_iterations", so["max_iterations"], integer=True),
             sdof_delta_c=parse_number("sdof", "delta_c", sd["delta_c"]),
+            branch_split=eq["branch_split"],
             motions=d.get("motions") or {},
             sdof_time_history=d.get("sdof_time_history") or {},
             verification_3d=d.get("verification_3d") or {},
@@ -459,6 +465,7 @@ class AnalysisSettings:
             "shape_iteration": {"max_iterations": self.max_iterations, "tolerance": self.tolerance},
             "static_solver": {"test": self.solver_test, "tolerance": self.solver_tolerance,
                               "max_iterations": self.solver_max_iterations},
+            "equivalent_static": {"branch_split": self.branch_split},
             "sdof": {"delta_c": self.sdof_delta_c},
             "motions": self.motions,
             "sdof_time_history": self.sdof_time_history,

@@ -8,24 +8,24 @@ New engine run on `inputs/archetypes/*.yaml` with default settings and the legac
 
 | Archetype | Values | Differing | Max abs. difference | Run time (s) |
 |---|---|---|---|---|
-| M01x | 1350 | 0 | 5.00e-04 | 2.6 |
-| M01y | 2250 | 0 | 5.00e-04 | 8.1 |
-| M02x | 1350 | 0 | 4.99e-04 | 2.7 |
-| M02y | 2250 | 0 | 5.00e-04 | 4.9 |
-| M03x | 1350 | 0 | 5.00e-04 | 0.8 |
-| M03y | 2250 | 0 | 5.00e-04 | 4.2 |
-| M29x | 1050 | 0 | 4.99e-04 | 0.3 |
-| M29y | 4050 | 0 | 5.00e-04 | 11.1 |
-| M30x | 1050 | 0 | 5.00e-04 | 0.4 |
-| M30y | 4050 | 0 | 5.00e-04 | 17.4 |
-| M31x | 1050 | 0 | 4.99e-04 | 0.3 |
-| M31y | 4050 | 0 | 5.00e-04 | 21.3 |
-| M61x | 3000 | 0 | 4.99e-04 | 9.6 |
-| M61y | 4650 | 0 | 5.00e-04 | 28.1 |
-| M62x | 3000 | 0 | 5.00e-04 | 8.4 |
-| M62y | 4650 | 0 | 5.00e-04 | 16.3 |
-| M63x | 3000 | 0 | 5.00e-04 | 5.9 |
-| M63y | 4650 | 0 | 5.00e-04 | 24.9 |
+| M01x | 1350 | 0 | 5.00e-04 | 0.4 |
+| M01y | 2250 | 0 | 5.00e-04 | 1.5 |
+| M02x | 1350 | 0 | 4.99e-04 | 0.4 |
+| M02y | 2250 | 0 | 5.00e-04 | 1.1 |
+| M03x | 1350 | 0 | 5.00e-04 | 0.2 |
+| M03y | 2250 | 0 | 5.00e-04 | 0.8 |
+| M29x | 1050 | 0 | 4.99e-04 | 0.1 |
+| M29y | 4050 | 0 | 5.00e-04 | 2.3 |
+| M30x | 1050 | 0 | 5.00e-04 | 0.1 |
+| M30y | 4050 | 0 | 5.00e-04 | 3.6 |
+| M31x | 1050 | 0 | 4.99e-04 | 0.1 |
+| M31y | 4050 | 0 | 5.00e-04 | 4.5 |
+| M61x | 3000 | 0 | 4.99e-04 | 2.2 |
+| M61y | 4650 | 0 | 5.00e-04 | 6.0 |
+| M62x | 3000 | 0 | 5.00e-04 | 1.9 |
+| M62y | 4650 | 0 | 5.00e-04 | 3.8 |
+| M63x | 3000 | 0 | 5.00e-04 | 1.4 |
+| M63y | 4650 | 0 | 5.00e-04 | 6.1 |
 
 ## 2. SDOF parameters vs `equivalent_static.py` + `NLTHA_SDOF.py`
 
@@ -64,27 +64,32 @@ For each archetype, the pushover step whose derived parameters best match the ha
 | M63x | 11.30 | 0.868 / 0.87 | 0.003 | 22.68 / 22.19 | 4 / 4 | 3 / 6 | Gamma and shape match a pushover step; typed nL = 6 but the 2D model has 3 longitudinal trapezes |
 | M63y | 11.30 | 1.102 / 1.102 | 0.005 | 21.66 / 21.12 | 7 / 7 | 8 / 8 | Gamma and shape match a pushover step |
 
-## 4. Effect of using the trapeze files as the single source
+## 4. Effect of the corrections to the paper's code
 
-The new code derives the static trilinear backbone from the Pinching4 files: the longitudinal point 3 becomes 10000 N at 24 mm (file) instead of 11500 N (original static code). Differences of the default run with respect to the legacy run:
+Sections 1-2 reproduce the paper's code. The engine's defaults differ in two corrections (docs/legacy_issues.md):
 
-| Archetype | Max rel. change in base shear | Base shear at 50 mm, legacy / default (kN) | Gamma at 50 mm, legacy / default |
+- **trapeze file** (A1): longitudinal point 3 = 10000 N at 24 mm, as in the Pinching4 file, instead of 11500 N;
+- **consistent split** (A2): the junction node mass is part of the main-line share, so the branch force is fully applied.
+
+Each run is compared with the paper-equivalent run (section 1). 'Max change' is the largest relative change of the base shear over the 50 Δc steps.
+
+| Archetype | V_b at 50 mm (kN): paper / trapeze file / consistent split / both (defaults) | Max change: trapeze / split / both | Γ at 50 mm: paper / both |
 |---|---|---|---|
-| M01x | 8.1% | 72.7 / 66.9 | 0.972 / 0.973 |
-| M01y | 8.2% | 73.9 / 68.7 | 1.125 / 1.138 |
-| M02x | 9.0% | 52.4 / 48.1 | 1.021 / 1.025 |
-| M02y | 5.4% | 58.6 / 55.8 | 0.952 / 0.960 |
-| M03x | 9.3% | 31.8 / 28.9 | 0.981 / 0.985 |
-| M03y | 3.7% | 38.4 / 36.9 | 0.788 / 0.795 |
-| M29x | 8.2% | 49.3 / 45.3 | 0.999 / 0.999 |
-| M29y | 10.4% | 183.5 / 164.6 | 1.032 / 1.017 |
-| M30x | 7.8% | 45.7 / 42.2 | 0.997 / 0.997 |
-| M30y | 11.0% | 175.4 / 156.3 | 1.040 / 1.029 |
-| M31x | 4.3% | 27.5 / 26.3 | 0.997 / 0.998 |
-| M31y | 11.6% | 167.4 / 148.1 | 1.139 / 1.137 |
-| M61x | 5.7% | 99.2 / 93.5 | 0.722 / 0.759 |
-| M61y | 9.6% | 133.4 / 120.6 | 1.150 / 1.158 |
-| M62x | 6.4% | 90.2 / 84.5 | 0.771 / 0.784 |
-| M62y | 18.2% | 149.5 / 135.0 | 0.229 / 0.185 |
-| M63x | 6.2% | 70.3 / 65.9 | 0.925 / 0.928 |
-| M63y | 10.1% | 109.1 / 98.1 | 1.223 / 1.229 |
+| M01x | 72.7 / 66.9 / 73.9 / 67.9 | 8.1% / 5.3% / 9.8% | 0.972 / 0.958 |
+| M01y | 73.9 / 68.7 / 80.6 / 70.6 | 8.2% / 9.5% / 5.0% | 1.125 / 1.129 |
+| M02x | 52.4 / 48.1 / 53.3 / 48.8 | 9.0% / 2.2% / 7.1% | 1.021 / 1.020 |
+| M02y | 58.6 / 55.8 / 59.9 / 56.9 | 5.4% / 4.0% / 3.0% | 0.952 / 0.917 |
+| M03x | 31.8 / 28.9 / 32.4 / 29.4 | 9.3% / 2.0% / 8.0% | 0.981 / 0.980 |
+| M03y | 38.4 / 36.9 / 38.9 / 37.5 | 3.7% / 1.5% / 3.0% | 0.788 / 0.772 |
+| M29x | 49.3 / 45.3 / 53.4 / 48.9 | 8.2% / 8.3% / 8.1% | 0.999 / 0.999 |
+| M29y | 183.5 / 164.6 / 211.3 / 188.8 | 10.4% / 15.2% / 9.9% | 1.032 / 0.932 |
+| M30x | 45.7 / 42.2 / 53.4 / 48.9 | 7.8% / 16.8% / 15.1% | 0.997 / 0.996 |
+| M30y | 175.4 / 156.3 / 202.2 / 179.7 | 11.0% / 16.2% / 15.6% | 1.040 / 0.950 |
+| M31x | 27.5 / 26.3 / 30.0 / 28.5 | 4.3% / 9.3% / 8.3% | 0.997 / 0.997 |
+| M31y | 167.4 / 148.1 / 193.1 / 170.6 | 11.6% / 41.9% / 41.9% | 1.139 / 1.039 |
+| M61x | 99.2 / 93.5 / 78.3 / 79.2 | 5.7% / 21.1% / 20.2% | 0.722 / 0.347 |
+| M61y | 133.4 / 120.6 / 135.2 / 121.7 | 9.6% / 6.9% / 9.4% | 1.150 / 1.128 |
+| M62x | 90.2 / 84.5 / 85.3 / 83.6 | 6.4% / 11.6% / 12.4% | 0.771 / 0.591 |
+| M62y | 149.5 / 135.0 / 145.2 / 132.7 | 18.2% / 8.2% / 16.0% | 0.229 / 0.151 |
+| M63x | 70.3 / 65.9 / 71.4 / 66.9 | 6.2% / 9.3% / 10.3% | 0.925 / 0.887 |
+| M63y | 109.1 / 98.1 / 112.9 / 100.3 | 10.1% / 3.5% / 8.1% | 1.223 / 1.211 |

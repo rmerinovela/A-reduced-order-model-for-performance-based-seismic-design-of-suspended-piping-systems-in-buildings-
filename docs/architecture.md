@@ -110,6 +110,7 @@ timehistory ◄──────┘      verification3d ◄── motions
 |---|---|---|
 | `tests/test_regression.py` | 18 pushovers and the SDOF derivation against the paper's code | ~1 min |
 | `tests/test_inputs.py` | equivalent input forms, validation errors, round-trips | <1 s |
+| `tests/test_static_model.py` | equilibrium of the load pattern (consistent split) on all archetypes | <1 s |
 | `tests/test_timehistory.py` | motion catalogue; SDOF and 3D against the paper's stored results (skipped without motions) | ~1 min |
 | `tests/test_app.py` | headless app runs of every tab (time-history tab skipped without motions) | ~4 min |
 | `validation/run_validation.py` | full static report → `validation/report.md` | ~2 min |

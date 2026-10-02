@@ -108,7 +108,8 @@ def rows_to_csv(rows: list[dict], columns: list[str]) -> str:
 
 
 def solver_settings(settings: AnalysisSettings) -> SolverSettings:
-    return SolverSettings(settings.solver_test, settings.solver_tolerance, settings.solver_max_iterations)
+    return SolverSettings(settings.solver_test, settings.solver_tolerance, settings.solver_max_iterations,
+                          settings.branch_split)
 
 
 def run_step(rs: ResolvedSystem, settings: AnalysisSettings, delta_c: float,

@@ -3,10 +3,10 @@
 import numpy as np
 import pytest
 
-from piperom.inputs import load_settings, load_system
+from piperom.inputs import load_system
 from piperom.sdof import derive_sdof
 from validation.legacy import (ARCHETYPES, EQUIV_STATIC_EXAMPLE, LEGACY_L, compare_pushover,
-                               extract_support_displacements, run_legacy_equivalent_static)
+                               extract_support_displacements, legacy_settings, run_legacy_equivalent_static)
 
 
 @pytest.mark.parametrize("tag", ARCHETYPES)
@@ -23,7 +23,7 @@ def test_sdof_parameters_reproduce_equivalent_static_pipeline(tmp_path):
     system = load_system(EQUIV_STATIC_EXAMPLE)
     system.trapezes["longitudinal"] = str(LEGACY_L)
     rs = system.resolve()
-    params = derive_sdof(rs, load_settings(), delta_c=float(ref["dc"]))
+    params = derive_sdof(rs, legacy_settings(), delta_c=float(ref["dc"]))
 
     assert np.array_equal(rs.brace_mask, ref["stiff_mask"])
     assert params.n_transverse == int(ref["nT"])

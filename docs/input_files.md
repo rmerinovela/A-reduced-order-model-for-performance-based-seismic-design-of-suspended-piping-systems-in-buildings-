@@ -112,6 +112,8 @@ pushover:
   warm_start: false        # start each step from the previous shape
 shape_iteration: {max_iterations: 50, tolerance: 1.0e-3}
 static_solver: {test: NormDispIncr, tolerance: 1.0e-8, max_iterations: 50}
+equivalent_static:
+  branch_split: consistent  # or legacy: the paper code's split of branch forces (docs/legacy_issues.md, A2)
 sdof:
   delta_c: 12.0            # Δc defining the equivalent SDOF
 

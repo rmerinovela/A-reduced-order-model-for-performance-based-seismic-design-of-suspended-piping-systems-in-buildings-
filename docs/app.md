@@ -62,7 +62,7 @@ One panel per brace type (transverse, longitudinal):
 | Section | Settings |
 |---|---|
 | Pseudo-pushover | Δc range or explicit list, warm start |
-| Shape iteration and static solver | iterations, tolerances, convergence test |
+| Shape iteration and static solver | iterations, tolerances, convergence test; branch-force split (`consistent`, or `legacy` to reproduce the paper's code) |
 | Equivalent SDOF | the Δc defining the SDOF |
 | SDOF time history | damping ratio, convergence test, tolerance, iterations |
 | 3D verification | damping ratio, main and fallback convergence tests and tolerances |

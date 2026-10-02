@@ -13,6 +13,13 @@ shape_iteration:            # fixed-point iteration on the displaced shape at ea
   max_iterations: 50
   tolerance: 1.0e-3         # RMS change of the normalised shape
 
+equivalent_static:
+  # How each branch force is shared between the branch and the main line, by tributary mass:
+  #   consistent: the junction node mass is part of the main-line share; the two parts add up to the force
+  #   legacy:     as the paper's code (node mass only in the branch share's denominator; the parts don't
+  #               add up). Reproduces the paper's pushover results (docs/legacy_issues.md, A2)
+  branch_split: consistent
+
 static_solver:              # OpenSees settings of each linear static solve
   test: NormDispIncr
   tolerance: 1.0e-8

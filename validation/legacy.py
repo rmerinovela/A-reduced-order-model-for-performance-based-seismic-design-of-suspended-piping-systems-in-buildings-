@@ -19,7 +19,7 @@ import numpy as np
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
-from piperom.inputs import PipingSystem, load_settings, load_system  # noqa: E402
+from piperom.inputs import AnalysisSettings, PipingSystem, load_system  # noqa: E402
 from piperom.pushover import PushoverResult, run_pushover  # noqa: E402
 from piperom.sdof import sdof_from_step  # noqa: E402
 
@@ -28,6 +28,11 @@ PAPER = REPO / "code implementation for paper"   # original scripts and results
 ARCHETYPE_DIR = REPO / "inputs" / "archetypes"
 ARCHETYPES = sorted(p.stem for p in ARCHETYPE_DIR.glob("*.yaml"))
 EQUIV_STATIC_EXAMPLE = REPO / "inputs" / "examples" / "equivalent_static_example.yaml"
+
+
+def legacy_settings(branch_split: str = "legacy") -> AnalysisSettings:
+    """Default settings with the paper code's branch-force split (docs/legacy_issues.md, A2)."""
+    return AnalysisSettings.from_dict({"equivalent_static": {"branch_split": branch_split}})
 
 
 def archetype(tag: str, legacy_trapezes: bool = True) -> PipingSystem:
@@ -50,7 +55,7 @@ def legacy_table(result: PushoverResult, tag: str) -> np.ndarray:
 
 
 def compare_pushover(tag: str) -> dict:
-    result = run_pushover(archetype(tag), load_settings())
+    result = run_pushover(archetype(tag), legacy_settings())
     new = legacy_table(result, tag)
     ref = np.loadtxt(PAPER / "Pushover2D" / f"pushover_results_{tag}.txt")
     if new.shape != ref.shape:

@@ -6,7 +6,7 @@ by the scripts in `validation/`; the tables below summarise them.
 
 | Part of the engine | Reference | Sample | Result |
 |---|---|---|---|
-| [Pseudo-pushover](#1-equivalent-static-procedure-and-pseudo-pushover) | `Pushover2D/pushover_results_*.txt` | 18 archetypes × 50 Δc, every stored value | **identical** at the stored precision |
+| [Pseudo-pushover](#1-equivalent-static-procedure-and-pseudo-pushover) | `Pushover2D/pushover_results_*.txt` | 18 archetypes × 50 Δc, every stored value | **identical** at the stored precision (with the paper code's trapeze value and branch split) |
 | [SDOF parameters](#2-equivalent-sdof-parameters) | `equivalent_static.py` → `NLTHA_SDOF.py` | the scripts' example system | **identical** (relative difference 0) |
 | [SDOF parameters](#hand-typed-sdof-constants) | constants typed into `Pushover_SDOF/*.py` | 18 SDOFs | only partly consistent with the 2D results (paper-side issue) |
 | [SDOF time history](#3-sdof-time-history) | `Results/<M>_peak_displacements.npy` | 18 SDOFs × 4 records × IM1–IM10 | **14 SDOFs match** (median 0, max 0.5%); M61x/y, M62x/y don't (paper-side issue) |
@@ -45,7 +45,9 @@ The two drivers that sort their DOF columns (M30y, M62y) are compared after the 
 **Input used.** The paper's static code hard-codes a longitudinal backbone point of 11500 N at 24 mm.
 The paper's trapeze file has 10000 N there ([legacy_issues.md](legacy_issues.md), A1). The comparison
 therefore uses `validation/legacy_static_C-TPS-L.csv`, which differs from the file only in that value.
-`piperom`'s default stays the file as published.
+`piperom`'s default stays the file as published. The comparison also uses `branch_split: legacy`,
+the paper code's split of branch forces ([legacy_issues.md](legacy_issues.md), A2). The default
+`consistent` split corrects it.
 
 **Result.** All **49,050 values** of the 18 files are identical. The largest raw difference is 5.0e-4, the
 rounding of the stored values.
@@ -56,8 +58,22 @@ rounding of the stored values.
 | M29x–M31y (6) | 15,300 | 0 |
 | M61x–M63y (6) | 22,950 | 0 |
 
-**Effect of the published trapeze file** (default inputs): base shears 4–18% lower than the paper's
-static results, Γ almost unchanged. Per-archetype values: `validation/report.md` §4.
+**Effect of the engine's corrections** (`validation/report.md` §4, against the paper-equivalent run):
+
+| Correction | Largest change of the base shear along the curve |
+|---|---|
+| trapeze file as published (A1) | 4–18% lower |
+| consistent branch-force split (A2) | 1.5–42%; mostly higher, lower for M61x, M62x and M62y; Γ changes a lot for M61x, M62x, M62y, M29y–M31y |
+| both (the defaults) | 3–42% |
+
+Why the split matters:
+- **Direct effect:** at a given shape, the paper code applies 1.3–1.8% less load than the support
+  forces for most archetypes, and 7–13% less for M29–M31 (many branches or a heavy header).
+- **Indirect effect:** the adaptive shape then responds to the corrected loads, which amplifies the
+  difference along the curve.
+
+`tests/test_static_model.py` checks that, with the consistent split, the base shear equals the sum of the
+brace and branch spring forces for every archetype.
 
 ## 2. Equivalent SDOF parameters
 

@@ -45,11 +45,18 @@ MASS_TOL = 1e-9
 
 @dataclass
 class SolverSettings:
-    """Convergence test of each static solve (values from the analysis settings)."""
+    """Settings of each static step (values from the analysis settings).
+
+    ``branch_split``: how a branch force is shared between the branch and the main line.
+    "consistent": the junction node mass belongs to the main-line share, so the two parts add up to
+    the branch force. "legacy": as the paper's code, where the node mass enters only the branch share's
+    denominator and the parts don't add up (docs/legacy_issues.md, A2).
+    """
 
     test: str
     tolerance: float
     max_iterations: int
+    branch_split: str
 
 
 @dataclass
@@ -253,8 +260,7 @@ def solve_static_step(rs: ResolvedSystem, d, delta: float, solver: SolverSetting
     x_support = np.sort(np.concatenate([np.array([0.0, L]), x_brace.copy(), x_branch.copy()]))
 
     # (i)-(ii) each branch force is split by tributary mass into a part staying on the branch and a
-    # part passed to the main line. As in the original code, the junction node mass counts in the
-    # "stay" share but not in the "pass" share, so the two don't add up to the branch force.
+    # part passed to the main line (see SolverSettings.branch_split)
     stay = np.zeros(nb)
     pass_left = np.zeros(nb)
     pass_right = np.zeros(nb)
@@ -270,8 +276,11 @@ def solve_static_step(rs: ResolvedSystem, d, delta: float, solver: SolverSetting
         m_node = mass_at(xj)
         m_stay = branch_mass[j] + (m_main + m_node)
         stay[j] = V_j * (branch_mass[j] / m_stay) if m_stay > 0.0 else 0.0
-        m_eff = branch_mass[j] + m_main
-        V_pass = V_j * (m_main / m_eff) if m_eff > 0.0 else 0.0
+        if solver.branch_split == "legacy":
+            m_eff = branch_mass[j] + m_main
+            V_pass = V_j * (m_main / m_eff) if m_eff > 0.0 else 0.0
+        else:
+            V_pass = V_j * ((m_main + m_node) / m_stay) if m_stay > 0.0 else 0.0
 
         if abs(xj - 0.0) < X_TOL:
             pass_right[j] = V_pass

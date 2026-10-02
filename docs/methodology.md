@@ -54,7 +54,10 @@ For an assumed normalised shape `d` (max |d| = 1):
    displacement Δc·dᵢ.
 2. **Loads.** The spring forces implied by the shape become an inertial load pattern:
    - Each branch force splits into a part that stays on the branch and a part passed to the main line,
-     by tributary mass.
+     by tributary mass: the branch mass against the main-line mass around the junction, junction node
+     included. The two parts add up to the branch force. The paper's code left the node mass out of the
+     passed part, so the parts didn't add up; `branch_split: legacy` reproduces that
+     ([legacy_issues.md](legacy_issues.md), A2).
    - The passed part divides left/right of the junction.
    - Along the main line, between consecutive branch junctions, the total shear is redistributed in
      proportion to mᵢ·dᵢ.
@@ -154,6 +157,10 @@ Full details: [validation.md](validation.md).
 | SDOF time history | `Results/*_peak_displacements.npy` | 14 of 18 SDOFs match; M61/M62 not traceable | [validation/timehistory_report.md](../validation/timehistory_report.md) |
 | 3D verification | `Results/*_biron_DispX/Y.txt` | reproduced to the stored precision | [validation/timehistory_report.md](../validation/timehistory_report.md) |
 
-The pushover match uses the longitudinal backbone the paper's static code actually used (11500 N at
-24 mm). The default is the trapeze file as published (10000 N), which lowers base shears by 4–18%
-([legacy_issues.md](legacy_issues.md), A1).
+The pushover match uses the paper code's inputs: the longitudinal backbone its static code actually
+used (11500 N at 24 mm) and its branch-force split. The engine's defaults correct both:
+- the trapeze file as published, 10000 N ([legacy_issues.md](legacy_issues.md), A1);
+- the consistent split (A2).
+
+Together they change base shears by up to 42% along the curves; per-archetype values are in
+`validation/report.md` §4.
